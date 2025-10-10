@@ -1,16 +1,14 @@
-# 1. Overview
-**Target:** `unika.htb`  
+# Overview
 **Difficulty:** Very Easy  
-**Skills:** RFI, responder, ntlm-relay, winrm  
-**Services observed:** Apache (HTTP) on 80/tcp, WinRM on 5985/tcp.  
+**Skills:** RFI, responder, ntlm-relay, password cracking, winrm  
 **HTB Link:** https://app.hackthebox.com/starting-point  
-**summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack hash via John The Ripper, relay to SMB/WinRM to obtain admin shell.
+**Summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack NTLM hash, log to WinRM to obtain admin shell.
 
 ---
 
-# 2. Steps
+# Steps
 
-## Reconnaissance
+## 1. Reconnaissance
 ### Nmap scan
 - [nmap scan](./evidences/nmap.txt)  
 - `nmap -sV unika.htb -oN nmap.txt`  
@@ -19,7 +17,7 @@
 
 ---
 
-## Resource Development
+## 2. Resource Development
 ### Responder tool
 - [NTLM hash](./evidences/ntlm_hash.png)  
 - `responder -I tun0`  
@@ -27,7 +25,7 @@
 
 ---
 
-## Initial Access
+## 3. Initial Access
 ### Remote File Intrusion (RFI)
 - [RFI command](./evidences/remote_file_intrusion.png)
 - triggers the LLMNR/NetBIOS Name Resolution Request.  
@@ -43,6 +41,6 @@
 
 ---
 
-## Privilege Escalation
+## 4. Privilege Escalation
 - [root flag](./evidences/root_flag.png)  
 - `cat C:\Users\mike\Desktop\flag.txt`
