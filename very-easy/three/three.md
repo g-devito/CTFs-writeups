@@ -1,3 +1,13 @@
+# Overview
+**Difficulty:** Very Easy  
+**Skills:** RFI, responder, ntlm-relay, password cracking, winrm  
+**HTB Link:** https://app.hackthebox.com/starting-point  
+**Summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack NTLM hash, log to WinRM to obtain admin shell.
+
+---
+
+# Steps
+
 # reconnaissance
 ## nmap scan
 - [nmap scan](./evidences/nmap.txt)
