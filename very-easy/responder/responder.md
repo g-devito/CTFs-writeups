@@ -9,7 +9,7 @@
 # Steps
 
 ## 1. Reconnaissance
-### Nmap scan
+### port scan
 - [nmap scan](./evidences/nmap.txt)  
 - `nmap -sV unika.htb -oN nmap.txt`  
 - Apache web server on port `80/tcp`  

