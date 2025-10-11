@@ -1,4 +1,4 @@
-# HackTheBox CTF Portfolio
+# CTFs writeups
 
 ![Offensive Security](https://img.shields.io/badge/Offensive%20Security-Network%2C%20Web%2C%20Binary-red)
 ![Cryptography](https://img.shields.io/badge/Cryptography-Classical%2C%20Modern%2C%20Stego-yellow)
