@@ -1,0 +1,9 @@
+# Nmap 7.95 scan initiated Sat Oct 11 11:55:46 2025 as: /usr/lib/nmap/nmap --privileged -sV -sS -oN reports/ignition/evidences/nmap.txt 10.129.83.230
+Nmap scan report for 10.129.83.230
+Host is up (0.047s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    nginx 1.14.2
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sat Oct 11 11:55:55 2025 -- 1 IP address (1 host up) scanned in 8.45 seconds

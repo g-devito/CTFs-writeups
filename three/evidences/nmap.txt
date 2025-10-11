@@ -1,0 +1,11 @@
+# Nmap 7.95 scan initiated Fri Oct 10 12:47:39 2025 as: /usr/lib/nmap/nmap --privileged -sV -sS -oN ../three/evidences/three.txt 10.129.227.248
+Nmap scan report for 10.129.227.248
+Host is up (0.029s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Oct 10 12:47:46 2025 -- 1 IP address (1 host up) scanned in 7.22 seconds
