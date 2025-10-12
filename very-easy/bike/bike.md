@@ -1,8 +1,8 @@
 # Overview
 **Difficulty:** Very Easy  
-**Skills:** server-side template injection, 
+**Skills:** Server-Side Template Injection (SSTI), Template engine fingerprinting and payload crafting, Web proxy and payload delivery  
 **HTB Link:** https://app.hackthebox.com/starting-point  
-**Summary:** 
+**Summary:** Exploited a Handlebars SSTI using process.mainModule.require to spawn a reverse shell, gain root, and capture the flag.  
 
 ---
 
