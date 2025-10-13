@@ -1,6 +1,6 @@
 # Overview
 **Difficulty:** Very Easy  
-**Skills:** TP (anonymous access), Hydra (SSH brute-force), SSH tunneling/port-forwarding, linpeas enumeration, PostgreSQL enumeration & SQL access, privilege escalation   
+**Skills:** FTP (anonymous access), Hydra (SSH brute-force), SSH tunneling, linpeas enumeration, PostgreSQL enumeration  
 **HTB Link:** https://app.hackthebox.com/starting-point  
 **Summary:** Gained user access by exploiting anonymous FTP and a default password (Hydra against SSH), tunneled to a localhost PostgreSQL instance and extracted the flag from the database    
 
