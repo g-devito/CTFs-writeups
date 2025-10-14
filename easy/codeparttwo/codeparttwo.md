@@ -1,6 +1,6 @@
 # CTF Write-up — CodePartTwo from hackthebox.com
 
-> **Summary:** 
+> **Summary:** Exploited a js2py SSTI RCE (CVE-2024-28397) to get an app shell, crack a user password and SSH in, then abused a sudo-able npbackup-cli misconfiguration to escalate to root.    
 > **Difficulty:** Easy  
 > **HTB:** https://app.hackthebox.com/machines/692
 >
