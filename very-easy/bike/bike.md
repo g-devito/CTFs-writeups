@@ -20,7 +20,7 @@
 
 ---
 
-## Reconnaissance
+## 1. Reconnaissance
 
 ### Port scan
 - Performed an `nmap` scan and enumerated open services. See `evidences/nmap.txt`.  
@@ -37,7 +37,7 @@ nmap -sV -sS 10.129.84.44 -oN nmap.txt
 
 ---
 
-## Resource development
+## 2. Resource development
 
 ### References and initial exploit idea
 - Referenced [HackTricks — SSTI / Handlebars](https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html#handlebars) for RCE idea.
@@ -46,7 +46,7 @@ nmap -sV -sS 10.129.84.44 -oN nmap.txt
 - Initial payload from HackTricks failed because `require` was not available in the expected scope: ![burpsuite fixed payload](evidences/burpsuite_payload.png) 
 - Adjusted approach to use `process.mainModule.require`: ![burpsuite fixed payload](evidences/fixed_burpsuite_payload.png)
 
-### reverse shell
+### Reverse shell
 - we get from [reverse shell generator](https://www.revshells.com/) the reverse shell code to inject as payload:
 ``` bash
 # regular version
@@ -63,24 +63,29 @@ nc -lvnp 9000
 
 ---
 
-## Initial access
+## 3. Initial access
 - Delivered the payload via Burp Suite and obtained iteractive shell as root: ![root shell](evidences/root_access.png)  
 - Retrieved flag:  
 ![root flag](evidences/flag.png)
 
 ---
 
-## Privilege escalation
+## 4. Privilege escalation
 > *Section intentionally left concise — see `Findings & recommendations` for mitigation and next steps.*
 
 ---
 
-## Findings & recommendations
+## 5. Findings & recommendations
 - not necessary in this case, since we accessed directly as `root`.
 
 ### Key findings
-- The web application was vulnerable to Handlebars SSTI.
-- The application environment allowed access patterns enabling remote code execution via template injection.
+|  # | Category                                      | Description                                                                                                                                                                    | Impact                                                                                                           |
+| -: | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+|  1 | **Template Injection (SSTI)**                 | The web application accepted and rendered user-supplied Handlebars templates, allowing server-side template injection (SSTI).                                                  | **High**        |
+|  2 | **Remote Code Execution via Template Engine** | The application environment and templating flow permitted crafted templates to execute arbitrary code or access privileged contexts, resulting in remote code execution (RCE). | **Critical** |
+
+
+
 
 ### Immediate remediation (high-level)
 1. **Sanitize/validate** all user-controllable template inputs; avoid directly rendering user-supplied strings as templates.  
