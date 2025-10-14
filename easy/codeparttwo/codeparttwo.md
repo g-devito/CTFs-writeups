@@ -4,8 +4,8 @@
 > **Difficulty:** Easy  
 > **HTB:** https://app.hackthebox.com/machines/692
 >
-![Tactics](https://img.shields.io/badge/Tactics-Recon%20%7C%20Resource%20Dev%20%7C%20Initial%20Access%20%7C%20Priv%20Esc-blue?style=flat-square)
-![Tools](https://img.shields.io/badge/Tools-Nmap%20%7C%20js2py%20%7C%20John%20%7C%20Netcat-red?style=flat-square)
+![Tactics](https://img.shields.io/badge/Tactics-Source%20Code%20Analysis%20%7C%20Hash%20Cracking%20%7C%20Priv%20Esc-blue?style=flat-square)
+![Tools](https://img.shields.io/badge/Tools-Nmap%20%7C%20js2py%20%7C%20John-red?style=flat-square)
 
 
 
