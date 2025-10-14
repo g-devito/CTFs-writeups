@@ -32,12 +32,15 @@ nmap -sV -sS 10.10.11.82 -oN nmap.txt
   - `22/tcp` — SSH
 
 ### Web site analysis
-- after creating an account and logging in we find a ![code execution page](evidences/run_code_website.png) 
-- we also find a download to the source code running this website: ![download button](evidences/download_app.png)
+- after creating an account and logging in we find an execute code form:  
+![code execution page](evidences/run_code_website.png) 
+- we also find a download to the source code running this website:  
+![download button](evidences/download_app.png)
 
 ### Source code analysis
 - we download the source code and analyze the `app.py` file. See `evidences/app.py`.  
-- analyzing the file we find that the code provided by the user is ran through the `js2py` library: ![js2py code](evidences/js2py.png)
+- analyzing the file we find that the code provided by the user is ran through the `js2py` library:  
+![js2py code](evidences/js2py.png)
 - from the requirements.txt file we find that the version is `js2py 0.74`
 
 ### CVE research
@@ -68,10 +71,12 @@ nc -lvnp 9000
 
 ### System enumeration
 - we accessed as user `app`, so we need to gain access as a more priviledge user
-- navigating the system we find the `user.db` file and download it locally. See `evidences/user.db`: ![users.db download](evidences/users_db_download.png)  
+- navigating the system we find the `user.db` file and download it locally. See `evidences/user.db`:  
+![users.db download](evidences/users_db_download.png)  
 
 ### Users.db enumeration
-- opening the database and searching in it let us find the users hashes: ![users hashes](evidences/user_hash.png)
+- opening the database and searching in it let us find the users hashes:  
+![users hashes](evidences/user_hash.png)
 
 ### Hash cracking
 - we can crack the hash using John the ripper:
@@ -91,11 +96,14 @@ ssh marco@10.10.11.82
 
 ## 4. Privilege escalation
 ### Linux enumeration
-- we use `sudo -l` to list cmds that the user can run as privileged user and find npbackup-cli: ![sudo cmds](evidences/sudo_cmds.png)
-- we also find the config file for npbackup: ![npbackup config](evidences/npbackup_config.png)
+- we use `sudo -l` to list cmds that the user can run as privileged user and find npbackup-cli:  
+![sudo cmds](evidences/sudo_cmds.png)
+- we also find the config file for npbackup:  
+![npbackup config](evidences/npbackup_config.png)
 
 ### Npbackup hack
-- we create a version of npbackup config that backup /root folder instead of /home/app/app: ![modified npbackup config](evidences/root_config.png)
+- we create a version of npbackup config that backup /root folder instead of /home/app/app:  
+![modified npbackup config](evidences/root_config.png)
 - than we create a backup of the folder:
 ``` bash
 npbackup-cli -c root.conf -b
